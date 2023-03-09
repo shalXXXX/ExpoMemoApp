@@ -1,16 +1,19 @@
-import React, { ComponentProps, ReactNode } from 'react'
-import { View, Text, StyleSheet, StyleProp, ViewStyle } from 'react-native'
+import React, { ComponentProps } from 'react'
+import { StyleSheet, StyleProp, ViewStyle, TouchableOpacity } from 'react-native'
 import { Feather } from '@expo/vector-icons';
 
 type Props = {
   style?: StyleProp<ViewStyle>
   name: ComponentProps<typeof Feather>["name"]
+  onPress?: () => void
 }
-function CircleButton({ style, name }: Props) {
+function CircleButton({ style, name, onPress }: Props) {
   return (
-    <View style={[styles.circleBotton, style]}>
+    <TouchableOpacity
+      style={[styles.circleBotton, style]}
+      onPress={onPress}>
       <Feather name={name} size={32} color="white" />
-    </View>
+    </TouchableOpacity>
   )
 }
 

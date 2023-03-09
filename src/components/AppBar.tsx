@@ -5,7 +5,7 @@ function AppBar() {
   return (
     <View style={styles.appBar}>
       <View style={styles.appBarInner}>
-        <Text style={styles.appBarTitle}>Memo App</Text>
+        <Text style={styles.appBarTitle}>Test App</Text>
         <Text style={styles.appBarRight}>ログアウト</Text>
       </View>
     </View>
