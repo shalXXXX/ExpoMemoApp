@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, TextInput, KeyboardAvoidingView } from "react-native"
+import { View, StyleSheet, TextInput, KeyboardAvoidingView, Keyboard } from "react-native"
 import AppBar from '../components/AppBar'
 import CircleButton from '../components/CircleButton'
 
@@ -8,7 +8,7 @@ function MemoCreateScreen() {
     <KeyboardAvoidingView style={styles.container} behavior="height">
       <AppBar />
       <View style={styles.inputContainer}>
-        <TextInput value="" multiline style={styles.input} />
+        <TextInput value="" multiline style={styles.input} onSubmitEditing={Keyboard.dismiss} />
       </View>
 
       <CircleButton name='check'/>
