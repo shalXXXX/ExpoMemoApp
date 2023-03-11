@@ -1,13 +1,19 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { View, ScrollView, Text, StyleSheet } from 'react-native'
 import AppBar from '../components/AppBar'
 import CircleButton from '../components/CircleButton'
 import { Feather } from '@expo/vector-icons';
+import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack/lib/typescript/src/types';
+import { MainStackParamList } from '../navigationType';
 
-function MemoDetailScreen() {
+type Props = {
+  navigation: NativeStackNavigationProp<MainStackParamList, "MemoEdit">
+}
+
+function MemoDetailScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
-      <AppBar />
+      {/* <AppBar /> */}
       <View style={styles.memoHeader}>
         <Text style={styles.memoTitle}>買い物リスト</Text>
         <Text style={styles.memoDate}>2022年12月24日 0:00</Text>
@@ -18,7 +24,12 @@ function MemoDetailScreen() {
         買い物リスト書体やレイアウトなどを確認するために用います。本文用なので使い方を間違えると不自然に見えることもありますので要注意。
         </Text>
       </ScrollView>
-      <CircleButton style={{top: 160, bottom: "auto"}} name="edit-2" />
+      <CircleButton
+        style={{top: 60, bottom: "auto"}}
+        name="edit-2"
+        onPress={() => {
+          navigation.navigate("MemoEdit")
+        }} />
     </View>
   );
 }

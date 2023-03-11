@@ -5,17 +5,48 @@ import MemoCreateScreen from './src/screens/MemoCreateScreen';
 import MemoDetailScreen from './src/screens/MemoDetailScreen';
 import MemoEditScreen from './src/screens/MemoEditScreen';
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+// ナビゲーションの実装
 import MemoListScreen from './src/screens/MemoListScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
 
+const Stack = createNativeStackNavigator();
+
 export default function App() {
+
   return (
-    // <MemoListScreen />
-    // <MemoDetailScreen />
-    // <MemoEditScreen />
-    // <MemoCreateScreen />
-    // <LoginScreen />
-    <SignUpScreen />
+    <NavigationContainer>
+      <Stack.Navigator
+       initialRouteName='LogIn'
+       screenOptions={{ // ヘッダーのスタイル
+        headerStyle: { backgroundColor: "#467FD3" },
+        headerTitleStyle: { color: "#FFF"},
+        headerTintColor: "#FFF",
+        headerBackTitleVisible: false,
+        headerTitle: "Test App",
+        animation: "slide_from_right",
+        gestureEnabled: true,
+        gestureDirection: "horizontal",
+       }}>
+        <Stack.Screen
+          name="LogIn"
+          component={LoginScreen}
+          options={{
+            animation: "fade_from_bottom"
+          }} />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUpScreen}
+          options={{
+            animation: "fade_from_bottom"
+          }} />
+        <Stack.Screen name="MemoList"   component={MemoListScreen} />
+        <Stack.Screen name="MemoCreate" component={MemoCreateScreen} />
+        <Stack.Screen name="MemoDetail" component={MemoDetailScreen} />
+        <Stack.Screen name="MemoEdit"   component={MemoEditScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }

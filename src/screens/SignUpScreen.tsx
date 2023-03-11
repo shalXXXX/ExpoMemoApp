@@ -1,22 +1,36 @@
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import React from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native"
 import AppBar from '../components/AppBar'
 import Button from '../components/Button'
- 
-function SignUpScreen() {
+import { MainStackParamList } from '../navigationType'
+
+type Props = {
+  navigation: NativeStackNavigationProp<MainStackParamList, "LogIn" | "MemoList">
+}
+
+function SignUpScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
-      <AppBar />
+      {/* <AppBar /> */}
       <View style={styles.inner}>
         <Text style={styles.title}>Sign In</Text>
         <TextInput value="Email Address" style={styles.input}/>
         <TextInput value="Password" style={styles.input}/>
 
-        <Button label='Submit' />
+        <Button 
+          label='Submit'
+          onPress={() => { navigation.reset({
+            index: 0,
+            routes: [{ name: "MemoList" }]
+          })}} />
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Already registerd?</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => { navigation.reset({
+            index: 0,
+            routes: [{ name: "LogIn"}]
+          })}}>
             <Text style={styles.footerLink}>Sign in here!</Text>
           </TouchableOpacity>
         </View>

@@ -1,17 +1,25 @@
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import React from 'react'
 import { View, StyleSheet, TextInput, KeyboardAvoidingView, Keyboard } from "react-native"
 import AppBar from '../components/AppBar'
 import CircleButton from '../components/CircleButton'
+import { MainStackParamList } from '../navigationType'
 
-function MemoCreateScreen() {
+type Props = {
+  navigation: NativeStackNavigationProp<MainStackParamList, "MemoList">
+}
+
+function MemoCreateScreen({ navigation }: Props) {
   return (
     <KeyboardAvoidingView style={styles.container} behavior="height">
-      <AppBar />
+      {/* <AppBar /> */}
       <View style={styles.inputContainer}>
         <TextInput value="" multiline style={styles.input} onSubmitEditing={Keyboard.dismiss} />
       </View>
 
-      <CircleButton name='check'/>
+      <CircleButton
+        name='check'
+        onPress={() => { navigation.goBack()}}/>
     </KeyboardAvoidingView>
   )
 }
