@@ -1,5 +1,5 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native"
 import AppBar from '../components/AppBar'
 import Button from '../components/Button'
@@ -10,15 +10,37 @@ type Props = {
 }
 
 function SignUpScreen({ navigation }: Props) {
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+
+
+  const handleChangeEmail = () => {
+
+  }
   return (
     <View style={styles.container}>
       {/* <AppBar /> */}
       <View style={styles.inner}>
         <Text style={styles.title}>Sign In</Text>
-        <TextInput value="Email Address" style={styles.input}/>
-        <TextInput value="Password" style={styles.input}/>
+        <TextInput
+          value={email}
+          style={styles.input}
+          autoCapitalize="none"
+          keyboardType='email-address'
+          placeholder='Email Address'
+          textContentType='emailAddress'
+          onChangeText={(text) => { setEmail(text);}}/>
 
-        <Button 
+        <TextInput
+          value={password}
+          style={styles.input}
+          autoCapitalize="none"
+          placeholder='Password'
+          secureTextEntry
+          textContentType='password'
+          onChangeText={(text) => { setPassword(text);}}/>
+
+        <Button
           label='Submit'
           onPress={() => { navigation.reset({
             index: 0,
@@ -62,7 +84,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 8,
     paddingVertical: 8,
-    color: "#DDDDDD",
+    // color: "#DDDDDD",
     marginBottom: 16,
   },
   footer: {
