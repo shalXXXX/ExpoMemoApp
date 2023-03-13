@@ -5,14 +5,31 @@ import MemoCreateScreen from './src/screens/MemoCreateScreen';
 import MemoDetailScreen from './src/screens/MemoDetailScreen';
 import MemoEditScreen from './src/screens/MemoEditScreen';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { initializeApp, getApps } from "firebase/app";
+import { initializeAuth } from "firebase/auth"
+import { getReactNativePersistence } from 'firebase/auth/react-native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // ナビゲーションの実装
 import MemoListScreen from './src/screens/MemoListScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
+import { firebaseConfig } from './env';
 
 const Stack = createNativeStackNavigator();
+
+// 初期化されているかの判定
+if (getApps().length === 0) {
+  const app = initializeApp(firebaseConfig);
+//   initializeAuth(app, {
+//   persistence: getReactNativePersistence(AsyncStorage)
+// })
+}
+
+
+
+
 
 export default function App() {
 

@@ -5,6 +5,9 @@ import AppBar from '../components/AppBar'
 import Button from '../components/Button'
 import { MainStackParamList } from '../navigationType'
 
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
+import { Alert } from 'react-native'
+
 type Props = {
   navigation: NativeStackNavigationProp<MainStackParamList, "LogIn" | "MemoList">
 }
@@ -13,10 +16,23 @@ function SignUpScreen({ navigation }: Props) {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
 
-
-  const handleChangeEmail = () => {
-
+  const auth = getAuth()
+  const handleSubmit = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const { user } = userCredential;
+      console.log(user.uid);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "MemoList"}]
+      })
+    })
+    .catch((err) => {
+      console.log(err.code, err.message)
+      Alert.alert("invalid-email")
+    })
   }
+
   return (
     <View style={styles.container}>
       {/* <AppBar /> */}
@@ -42,17 +58,16 @@ function SignUpScreen({ navigation }: Props) {
 
         <Button
           label='Submit'
-          onPress={() => { navigation.reset({
-            index: 0,
-            routes: [{ name: "MemoList" }]
-          })}} />
+          onPress={() => handleSubmit()} />
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Already registerd?</Text>
-          <TouchableOpacity onPress={() => { navigation.reset({
-            index: 0,
-            routes: [{ name: "LogIn"}]
-          })}}>
+          <TouchableOpacity onPress={() => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "LogIn"}]
+            })
+          }}>
             <Text style={styles.footerLink}>Sign in here!</Text>
           </TouchableOpacity>
         </View>

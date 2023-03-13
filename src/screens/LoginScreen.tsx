@@ -1,6 +1,7 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import React, { useState } from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native"
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native"
 import AppBar from '../components/AppBar'
 import Button from '../components/Button'
 import { MainStackParamList } from '../navigationType'
@@ -12,6 +13,21 @@ type Props = {
 function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const auth = getAuth()
+
+  const handleSubmit = () => {
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "MemoList" }],
+      })
+    })
+    .catch((err) => {
+      Alert.alert(err.message)
+    })
+
+  }
 
   return (
     <View style={styles.container}>
@@ -38,11 +54,7 @@ function LoginScreen({ navigation }: Props) {
 
         <Button
           label='Submit'
-          onPress={() => {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "MemoList" }],
-          })}} />
+          onPress={() => handleSubmit()} />
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Not registerd?</Text>
