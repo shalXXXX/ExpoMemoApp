@@ -1,10 +1,12 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
-import React, { useState } from 'react'
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth/react-native'
+import React, { useState, useEffect } from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native"
+import { firebaseInit } from '../../firebaseInit'
 import AppBar from '../components/AppBar'
 import Button from '../components/Button'
 import { MainStackParamList } from '../navigationType'
+
 
 type Props = {
   navigation : NativeStackNavigationProp<MainStackParamList, "SignUp" | "MemoList">
@@ -13,11 +15,25 @@ type Props = {
 function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const auth = getAuth()
+  const auth = firebaseInit()
+  
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "MemoList"}],
+        });
+      }
+    });
+    return unsubscribe;
+  },[])
 
   const handleSubmit = () => {
     signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
+      const { user } = userCredential;
+      console.log(user.uid)
       navigation.reset({
         index: 0,
         routes: [{ name: "MemoList" }],

@@ -7,6 +7,8 @@ import { MainStackParamList } from '../navigationType'
 
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { Alert } from 'react-native'
+import { firebaseInit } from '../../firebaseInit'
+
 
 type Props = {
   navigation: NativeStackNavigationProp<MainStackParamList, "LogIn" | "MemoList">
@@ -16,7 +18,8 @@ function SignUpScreen({ navigation }: Props) {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
 
-  const auth = getAuth()
+  const auth = firebaseInit()
+
   const handleSubmit = () => {
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
