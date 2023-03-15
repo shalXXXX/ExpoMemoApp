@@ -15,8 +15,8 @@ type Props = {
 function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const auth = firebaseInit()
-  
+  const auth = getAuth()
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {

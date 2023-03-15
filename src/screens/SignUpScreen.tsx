@@ -18,7 +18,7 @@ function SignUpScreen({ navigation }: Props) {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
 
-  const auth = firebaseInit()
+  const auth = getAuth()
 
   const handleSubmit = () => {
     createUserWithEmailAndPassword(auth, email, password)

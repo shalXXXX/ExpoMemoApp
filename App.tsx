@@ -15,8 +15,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // ナビゲーションの実装
 import MemoListScreen from './src/screens/MemoListScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
+import { firebaseConfig } from './env';
 
-
+if (getApps().length === 0) {
+  const app = initializeApp(firebaseConfig);
+  initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage)
+})
+}
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +41,7 @@ export default function App() {
         animation: "slide_from_right",
         gestureEnabled: true,
         gestureDirection: "horizontal",
+        headerTitleAlign: "center",
        }}>
         <Stack.Screen
           name="LogIn"

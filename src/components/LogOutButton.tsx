@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { getAuth } from 'firebase/auth'
 import { signOut } from 'firebase/auth/react-native'
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
@@ -9,7 +10,7 @@ import { MainStackParamList } from '../navigationType'
 
 function LogOutButton() {
   const navigation = useNavigation<NativeStackNavigationProp<MainStackParamList, "LogIn">>()
-  const auth = firebaseInit()
+  const auth = getAuth()
   const handlePress = () => {
     signOut(auth)
     .then(() => {
