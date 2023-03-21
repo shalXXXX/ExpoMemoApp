@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 export type MainStackParamList = {
   MemoList: undefined;
   MemoDetail: {id?: string};
-  MemoEdit: undefined;
+  MemoEdit: {id: string, bodyText: string};
   MemoCreate: undefined;
   LogIn: undefined;
   SignUp: undefined;
