@@ -6,12 +6,13 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigationType';
 import { Timestamp } from 'firebase/firestore';
 import { FlatList } from 'react-native';
+import { dateToString } from '../utils';
 
 type navigationType = NativeStackNavigationProp<MainStackParamList, "MemoDetail">
 interface IMemo {
   id: string;
   bodyText: string;
-  updatedAt: Timestamp;
+  updatedAt: Date;
 }
 
 type MemoArray = IMemo[]
@@ -30,15 +31,16 @@ function MemoList({ memos }: Props) {
       <TouchableOpacity
       style={styles.memoListItem}
         onPress={() => {
-          navigation.navigate("MemoDetail")
+          navigation.navigate("MemoDetail", { id: item.id })
         }}>
         <View>
           <Text
           style={styles.memoListItemTitle}
-           numberOfLines={1}>
+           numberOfLines={1}
+           >
             {item.bodyText}
           </Text>
-          <Text style={styles.memoListItemDate}>{String(item.updatedAt)}</Text>
+          <Text style={styles.memoListItemDate}>{dateToString(item.updatedAt)}</Text>
         </View>
 
         {/**削除ボタン */}

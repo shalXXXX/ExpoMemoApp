@@ -1,27 +1,74 @@
-import React, { ReactNode } from 'react'
-import { View, ScrollView, Text, StyleSheet } from 'react-native'
+import React, { ReactNode, useEffect, useState } from 'react'
+import { View, ScrollView, Text, StyleSheet, Alert } from 'react-native'
 import AppBar from '../components/AppBar'
 import CircleButton from '../components/CircleButton'
 import { Feather } from '@expo/vector-icons';
-import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack/lib/typescript/src/types';
+import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigationType';
+import { RouteProp } from '@react-navigation/native';
+import { getApp } from 'firebase/app';
+import { collection, doc, getDoc, getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { dateToString } from '../utils';
 
 type Props = {
   navigation: NativeStackNavigationProp<MainStackParamList, "MemoEdit">
+  route: RouteProp<MainStackParamList, "MemoDetail">
 }
 
-function MemoDetailScreen({ navigation }: Props) {
+// type Props = NativeStackScreenProps<MainStackParamList, "MemoDetail">
+
+function MemoDetailScreen({ navigation, route }: Props) {
+  const [memo, setMemo] = useState<{id: string, bodyText: string, updatedAt: Date | null}>({id: "", bodyText: "", updatedAt: null})
+  const { id } = route.params;
+  const app = getApp()
+  const db = getFirestore(app);
+  const auth = getAuth()
+  const user = auth.currentUser;
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      if (!user) return;
+
+      async function fetchData(id: string) {
+        try {
+          const uid = user?.uid;
+          const docRef = doc(db, `users/${uid}/memos`, id);
+          const docSnap = await getDoc(docRef);
+          console.log(docSnap.data());
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setMemo({
+              id: docSnap.id,
+              bodyText: data.bodyText,
+              updatedAt: data.updatedAt.toDate()
+            });
+          } else {
+            console.log("No such Document!")
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      if (id) {
+        fetchData(id);
+      } else {
+        Alert.alert("no such id");
+      };
+    });
+    return unsubscribe;
+  }, [navigation])
+  const date = dateToString(memo.updatedAt)
   return (
     <View style={styles.container}>
       {/* <AppBar /> */}
       <View style={styles.memoHeader}>
-        <Text style={styles.memoTitle}>買い物リスト</Text>
-        <Text style={styles.memoDate}>2022年12月24日 0:00</Text>
+        <Text style={styles.memoTitle} numberOfLines={1}>{memo.bodyText}</Text>
+        <Text style={styles.memoDate}>{memo && dateToString(memo.updatedAt)}</Text>
       </View>
 
       <ScrollView style={styles.memoBody}>
         <Text style={styles.memoText}>
-        買い物リスト書体やレイアウトなどを確認するために用います。本文用なので使い方を間違えると不自然に見えることもありますので要注意。
+        {memo.bodyText}
         </Text>
       </ScrollView>
       <CircleButton

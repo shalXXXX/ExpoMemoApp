@@ -17,7 +17,7 @@ type Props = {
 interface IMemo {
   id: string;
   bodyText: string;
-  updatedAt: Timestamp;
+  updatedAt: Date;
 }
 
 function MemoListScreen({ navigation }: Props) {

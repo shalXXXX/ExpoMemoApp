@@ -16,6 +16,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MemoListScreen from './src/screens/MemoListScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
 import { firebaseConfig } from './env';
+import { MainStackParamList } from './src/navigationType';
 
 if (getApps().length === 0) {
   const app = initializeApp(firebaseConfig);
@@ -24,7 +25,7 @@ if (getApps().length === 0) {
 })
 }
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<MainStackParamList>();
 
 export default function App() {
 
