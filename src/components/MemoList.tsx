@@ -32,8 +32,23 @@ function MemoList({ memos }: Props) {
   const db = getFirestore(app);
   const user = auth.currentUser;
   
-  const handlePress = async (id: string) => {
-    await deleteDoc(doc(db, `users/${user?.uid}/memos/${id}`));
+  const handlePress = (id: string) => {
+    Alert.alert("メモを削除します", "よろしいですか？", [
+      {
+        text: "キャンセル", 
+        onPress: () => {},
+      },
+      {
+        text: "削除する",
+        style: "destructive",
+        onPress: async () => {
+          await deleteDoc(doc(db, `users/${user?.uid}/memos/${id}`))
+          .catch(() => {
+            Alert.alert("削除に失敗しました。")
+          });
+        }
+      }
+    ])
   }
 
   function RenderItem({item}: any) {

@@ -1,11 +1,12 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
-import { View, StyleSheet, TextInput, KeyboardAvoidingView, Keyboard} from "react-native"
+import { View, StyleSheet, TextInput, KeyboardAvoidingView, Keyboard, Alert} from "react-native"
 import CircleButton from '../components/CircleButton'
 import { MainStackParamList } from '../navigationType'
 import { getFirestore, collection, addDoc } from "firebase/firestore"
 import { getAuth } from 'firebase/auth'
 import { getApp, getApps } from 'firebase/app'
+import { translateErrors } from '../utils'
 type Props = {
   navigation: NativeStackNavigationProp<MainStackParamList, "MemoList">
 }
@@ -19,16 +20,15 @@ function MemoCreateScreen({ navigation }: Props) {
 
   const handlePress = async () => {
     const db = getFirestore(app)
-    console.log("User: ",user?.uid)
     try {
-      const docRef = await addDoc(collection(db, `users/${user?.uid}/memos`), {
+      await addDoc(collection(db, `users/${user?.uid}/memos`), {
         bodyText: memo,
         updatedAt: new Date(),
       });
-      console.log("Document written with ID: ", docRef.id);
       navigation.goBack();
-    } catch(e) {
-      console.log(e);
+    } catch(err: any) {
+      const errorMsg = translateErrors(err.code);
+      Alert.alert(errorMsg.title, errorMsg.description)
     }
   }
   return (

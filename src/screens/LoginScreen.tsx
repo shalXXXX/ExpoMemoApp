@@ -7,6 +7,7 @@ import AppBar from '../components/AppBar'
 import Button from '../components/Button'
 import Loading from '../components/Loading'
 import { MainStackParamList } from '../navigationType'
+import { translateErrors } from '../utils'
 
 
 type Props = {
@@ -39,14 +40,14 @@ function LoginScreen({ navigation }: Props) {
     signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const { user } = userCredential;
-      console.log(user.uid)
       navigation.reset({
         index: 0,
         routes: [{ name: "MemoList" }],
       })
     })
     .catch((err) => {
-      Alert.alert(err.message)
+      const errorMsg = translateErrors(err.code);
+      Alert.alert(errorMsg.title, errorMsg.description)
     })
     .finally(() => {
       setIsLoading(false);
@@ -56,7 +57,7 @@ function LoginScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <Loading isLoading />
+      <Loading isLoading={isLoading} />
       {/* <AppBar /> */}
       <View style={styles.inner}>
         <Text style={styles.title}>Log In</Text>

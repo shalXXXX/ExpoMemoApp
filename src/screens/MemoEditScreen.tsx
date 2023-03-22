@@ -25,16 +25,14 @@ function MemoEditScreen({ navigation, route }: Props) {
   const db = getFirestore(app);
   const ref = doc(collection(db, `users/${user?.uid}/memos`), id);
   const handlePress = async () => {
-
     try {
       await updateDoc(ref, {
         bodyText: body,
         updatedAt: new Date()
       });
       navigation.goBack();
-    } catch (error) {
-      console.log(user)
-      Alert.alert(String(error))
+    } catch (err: any) {
+      Alert.alert(err.code)
     }
   }
   return (

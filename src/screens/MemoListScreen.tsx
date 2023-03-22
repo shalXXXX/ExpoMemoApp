@@ -1,9 +1,9 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { collection, getDocs, getFirestore, orderBy, query, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, onSnapshot, orderBy, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, Alert } from 'react-native'
 import Button from '../components/Button';
 
 import CircleButton from '../components/CircleButton';
@@ -38,16 +38,14 @@ function MemoListScreen({ navigation }: Props) {
 
   
   useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      if (!user) return;
-
+    if (!user) return;
+    setIsLoading(true)
+    const uid = user?.uid;
+    const memoRef = collection(db, `users/${uid}/memos`);
+    const q = query(memoRef, orderBy("updatedAt", "desc"))
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       async function fetchData() {
         try {
-          setIsLoading(true)
-          const uid = user?.uid;
-          const memoRef = collection(db, `users/${uid}/memos`);
-          const q = query(memoRef, orderBy("updatedAt", "desc"))
-          const querySnapshot = await getDocs(q);
           const userMemos: IMemo[] = [];
           querySnapshot.forEach((doc) => {
             const data = doc.data();
@@ -61,13 +59,13 @@ function MemoListScreen({ navigation }: Props) {
           setIsLoading(false);
         } catch (error) {
           setIsLoading(false);
-          console.log(error);
+          Alert.alert(error)
         }
       }
       fetchData();
     });
     return unsubscribe;
-  }, [navigation]);
+  }, []);
 
   if (memos.length === 0) {
     return (

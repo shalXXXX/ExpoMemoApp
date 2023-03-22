@@ -28,13 +28,12 @@ function MemoDetailScreen({ navigation, route }: Props) {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       if (!user) return;
-
+      
       async function fetchData(id: string) {
         try {
           const uid = user?.uid;
           const docRef = doc(db, `users/${uid}/memos`, id);
           const docSnap = await getDoc(docRef);
-          console.log(docSnap.data());
           if (docSnap.exists()) {
             const data = docSnap.data();
             setMemo({
@@ -43,10 +42,10 @@ function MemoDetailScreen({ navigation, route }: Props) {
               updatedAt: data.updatedAt.toDate()
             });
           } else {
-            console.log("No such Document!")
+            Alert.alert("そのようなメモはありません")
           }
-        } catch (error) {
-          console.log(error);
+        } catch (error: any) {
+          Alert.alert(error)
         }
       };
       if (id) {
@@ -57,7 +56,7 @@ function MemoDetailScreen({ navigation, route }: Props) {
     });
     return unsubscribe;
   }, [navigation])
-  const date = dateToString(memo.updatedAt)
+  
   return (
     <View style={styles.container}>
       {/* <AppBar /> */}

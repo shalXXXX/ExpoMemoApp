@@ -8,6 +8,7 @@ import { MainStackParamList } from '../navigationType'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { Alert } from 'react-native'
 import { firebaseInit } from '../../firebaseInit'
+import { translateErrors } from '../utils'
 
 
 type Props = {
@@ -24,15 +25,15 @@ function SignUpScreen({ navigation }: Props) {
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const { user } = userCredential;
-      console.log(user.uid);
       navigation.reset({
         index: 0,
         routes: [{ name: "MemoList"}]
       })
     })
     .catch((err) => {
-      console.log(err.code, err.message)
-      Alert.alert("invalid-email")
+      const errorMsg = translateErrors(err.code);
+      Alert.alert(errorMsg.title, errorMsg.description);
+      // Alert.alert(err.code)
     })
   }
 

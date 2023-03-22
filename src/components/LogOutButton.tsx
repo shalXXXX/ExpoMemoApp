@@ -20,7 +20,6 @@ function LogOutButton() {
       })
     })
     .catch((err) => {
-      console.log(err)
       Alert.alert("ログアウトに失敗しました")
     });
   }
