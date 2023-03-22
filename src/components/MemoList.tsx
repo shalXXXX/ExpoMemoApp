@@ -4,9 +4,11 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList } from '../navigationType';
-import { Timestamp } from 'firebase/firestore';
+import { collection, deleteDoc, deleteField, doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
 import { FlatList } from 'react-native';
 import { dateToString } from '../utils';
+import { getApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth/react-native';
 
 type navigationType = NativeStackNavigationProp<MainStackParamList, "MemoDetail">
 interface IMemo {
@@ -25,6 +27,14 @@ interface Props {
 
 function MemoList({ memos }: Props) {
   const navigation = useNavigation<navigationType>();
+  const app = getApp();
+  const auth = getAuth();
+  const db = getFirestore(app);
+  const user = auth.currentUser;
+  
+  const handlePress = async (id: string) => {
+    await deleteDoc(doc(db, `users/${user?.uid}/memos/${id}`));
+  }
 
   function RenderItem({item}: any) {
     return (
@@ -46,7 +56,7 @@ function MemoList({ memos }: Props) {
         {/**削除ボタン */}
         <TouchableOpacity
           style={styles.memoDelete}
-          onPress={() => {Alert.alert("Are you sure?")}}>
+          onPress={() => {handlePress(item.id);}}>
           <Feather name="x" size={16} color="#B0B0B0"/>
         </TouchableOpacity>
       </TouchableOpacity>

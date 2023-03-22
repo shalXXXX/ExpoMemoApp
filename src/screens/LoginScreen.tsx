@@ -5,6 +5,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "reac
 import { firebaseInit } from '../../firebaseInit'
 import AppBar from '../components/AppBar'
 import Button from '../components/Button'
+import Loading from '../components/Loading'
 import { MainStackParamList } from '../navigationType'
 
 
@@ -15,8 +16,10 @@ type Props = {
 function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const auth = getAuth()
 
+  // ログイン状態を監視する
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -24,12 +27,15 @@ function LoginScreen({ navigation }: Props) {
           index: 0,
           routes: [{ name: "MemoList"}],
         });
+      } else {
+        setIsLoading(false);
       }
     });
     return unsubscribe;
   },[])
 
   const handleSubmit = () => {
+    setIsLoading(true);
     signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const { user } = userCredential;
@@ -42,11 +48,15 @@ function LoginScreen({ navigation }: Props) {
     .catch((err) => {
       Alert.alert(err.message)
     })
+    .finally(() => {
+      setIsLoading(false);
+    })
 
   }
 
   return (
     <View style={styles.container}>
+      <Loading isLoading />
       {/* <AppBar /> */}
       <View style={styles.inner}>
         <Text style={styles.title}>Log In</Text>

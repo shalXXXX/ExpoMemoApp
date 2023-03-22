@@ -3,9 +3,11 @@ import { getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { collection, getDocs, getFirestore, orderBy, query, Timestamp } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
+import Button from '../components/Button';
 
 import CircleButton from '../components/CircleButton';
+import Loading from '../components/Loading';
 import LogOutButton from '../components/LogOutButton';
 import MemoList from '../components/MemoList';
 import { MainStackParamList } from '../navigationType';
@@ -21,7 +23,8 @@ interface IMemo {
 }
 
 function MemoListScreen({ navigation }: Props) {
-  const [memos, setMemos] = useState<IMemo[]>([])
+  const [memos, setMemos] = useState<IMemo[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const app = getApp();
   const db = getFirestore(app);
   const auth = getAuth();
@@ -31,14 +34,16 @@ function MemoListScreen({ navigation }: Props) {
     navigation.setOptions({
       headerRight: () => <LogOutButton />
     });
-  }, [navigation]);
+  }, []);
 
+  
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       if (!user) return;
 
       async function fetchData() {
         try {
+          setIsLoading(true)
           const uid = user?.uid;
           const memoRef = collection(db, `users/${uid}/memos`);
           const q = query(memoRef, orderBy("updatedAt", "desc"))
@@ -53,7 +58,9 @@ function MemoListScreen({ navigation }: Props) {
             });
           });
           setMemos(userMemos);
+          setIsLoading(false);
         } catch (error) {
+          setIsLoading(false);
           console.log(error);
         }
       }
@@ -62,8 +69,20 @@ function MemoListScreen({ navigation }: Props) {
     return unsubscribe;
   }, [navigation]);
 
+  if (memos.length === 0) {
+    return (
+      <View style={emptyStyles.container}>
+        <Loading isLoading={isLoading}/>
+        <View style={emptyStyles.inner}>
+          <Text style={emptyStyles.title}>最初のメモを作成しましょう</Text>
+          <Button style={emptyStyles.button} label='作成する' onPress={() => {navigation.navigate("MemoCreate")}}/>
+        </View>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
+      <Loading isLoading={isLoading}/>
       <MemoList memos={memos}/>
       <CircleButton
         name="plus"
@@ -79,5 +98,24 @@ const styles = StyleSheet.create({
     overflow: "scroll",
   },
 });
+
+const emptyStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  inner: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 18,
+    marginBottom: 24,
+  },
+  button: {
+    alignSelf: "center",
+  }
+})
 
 export default MemoListScreen
